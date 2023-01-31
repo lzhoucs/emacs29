@@ -1,3 +1,6 @@
+ ;; -*- lexical-binding: t; -*-
+
+
 (setq gc-cons-threshold (* 50 1000 1000))
 (menu-bar-mode   -1)
 (scroll-bar-mode -1)
