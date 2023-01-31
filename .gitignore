@@ -2,3 +2,6 @@
 /eln-cache/
 /custom-vars.el
 /auto-save-list/
+/tutorial/
+/*.el~
+/history
