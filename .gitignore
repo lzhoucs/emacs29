@@ -5,3 +5,7 @@
 /tutorial/
 /*.el~
 /history
+/tree-sitter/
+/transient/
+/projects
+/multisession/

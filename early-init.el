@@ -19,9 +19,10 @@
 
 (define-key global-map (kbd "C-<tab>") 'other-window)
 (define-key global-map (kbd "C-=") 'text-scale-increase)
-(define-key global-map (kbd "C--") 'text-scale-decrease)
+(define-key global-map (kbd "C-j") nil)
 
-(setq treesit-extra-load-path '("/home/lzhou/code/oss/tree-sitter-module/dist"))
+
+;; (setq treesit-extra-load-path '("/home/lzhou/code/oss/tree-sitter-module/dist"))
 
 
 ( setq custom-file (locate-user-emacs-file "custom-vars.el") )
