@@ -4,6 +4,10 @@
 SPC leader mode-specifc-map, so SPC a is C-C a
 SPC SPC => C-x
 SPC : => M-x
+** v1.1
+SPC => c-x, so SPC p s is c-x p s
+SPC SPC => c-c
+SPC : => M-x
 * Reference
 https://github.com/DogLooksGood/dogEmacs/blob/master/elisp/init-modal.el
 https://github.com/DogLooksGood/meomacs

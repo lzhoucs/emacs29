@@ -37,9 +37,6 @@
   ;; (load-theme 'modus-operandi)
   ;; :bind ("<f5>" . modus-themes-toggle))
 
-
-
-
 ;; Evil mode
 ;; (use-package evil
 ;;   :init
@@ -47,104 +44,8 @@
 ;;   :config
 ;;   (evil-mode 1))
 
-(defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
 
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
-   '(":" . execute-extended-command)
-   '("ab" . split-window-horizontally)
-   )
-
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   ;; '("U" . meow-undo-in-selection)
-   '("U" . undo-redo)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-
-(use-package meow
-  :config
-  (require 'meow)
-  (meow-setup)
-  (meow-global-mode 1)
-  )
+(load-file (locate-user-emacs-file "my/meow.el"))
 
 ;; Enable vertico
 (use-package vertico
@@ -338,6 +239,7 @@
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
+        orderless-component-separator #'orderless-escapable-split-on-space
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
@@ -386,7 +288,7 @@
     (go "https://github.com/tree-sitter/tree-sitter-go")
     (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
     (html "https://github.com/tree-sitter/tree-sitter-html")
-    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+    (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
     (json "https://github.com/tree-sitter/tree-sitter-json")
     (lua "https://github.com/Azganoth/tree-sitter-lua")
     (make "https://github.com/alemuller/tree-sitter-make")
@@ -417,18 +319,29 @@
 ;; manually map original non treesit mode to treesit mode(*-ts-mode)
 ;; this only works when original non treesit mode are auto loaded which isn't the case for typescript because the mode (typescript-mode) itself is not installed
 ;; (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode))
+;; works well
 (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
-(add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode))
+;; does not work
+;; (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode))
 
 ;; this approach works better since it doesn't require original mode to be installed
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-;; (add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
 
 (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
-(add-hook 'javascript-ts-mode-hook 'eglot-ensure)
+(add-hook 'js-ts-mode-hook 'eglot-ensure)
 
 
-
+;; built in package
+(use-package eglot
+  :bind (:map eglot-mode-map
+         ("C-c r" . eglot-rename)
+         ("C-c o" . eglot-code-action-organize-imports)
+         ("C-c h" . eldoc)
+         ("C-c d" . xref-find-definitions)
+         ("C-c t" . eglot-find-typeDefinition)
+        )
+  )
 
 
 (use-package helpful)
@@ -446,4 +359,13 @@
   (pyim-default-scheme 'quanpin) ;; 'wubi 'cangjie
   ;; 设置 pyim 是否使用云拼音
   ;; (setq pyim-cloudim 'baidu) ;; 'google
+  )
+
+(use-package modalka
+
+  :config
+  (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
+  (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
+  (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
+  (modalka-global-mode 1)
   )
