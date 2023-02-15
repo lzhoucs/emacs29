@@ -45,7 +45,7 @@
 ;;   (evil-mode 1))
 
 
-(load-file (locate-user-emacs-file "my/meow.el"))
+;; (load-file (locate-user-emacs-file "my/meow.el"))
 
 ;; Enable vertico
 (use-package vertico
@@ -301,7 +301,18 @@
     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
+(use-package project
+  ;; :config
+  ;; (setq project-switch-commands '(
+  ;;                                 (project-find-file "Find file")
+  ;;                                 ))
+  )
 (use-package magit
+  ;; :requires project1absdf
+  :init
+  ;; this is to populate project-switch-commands with Magit(m)
+  (require 'magit-extras)
+  ;; (require 'project)
   :config
   (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   )
@@ -364,11 +375,15 @@
   ;; (setq pyim-cloudim 'baidu) ;; 'google
   )
 
-;; (use-package modalka
+(use-package modalka
 
-;;   :config
-;;   (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
-;;   (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
-;;   (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
-;;   (modalka-global-mode 1)
-;;   )
+  ;; :bind (:map modalka-mode-map
+  ;;        ("C-x C-g" . execute-extended-command)
+  ;;        )
+
+  :config
+  (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
+  (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
+  (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
+  (modalka-global-mode 1)
+  )
