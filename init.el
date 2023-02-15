@@ -301,7 +301,10 @@
     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-(use-package magit)
+(use-package magit
+  :config
+  (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  )
 ;; (use-package which-key
 ;;   :init
 ;;   (setq which-key-idle-delay .4)
@@ -361,11 +364,11 @@
   ;; (setq pyim-cloudim 'baidu) ;; 'google
   )
 
-(use-package modalka
+;; (use-package modalka
 
-  :config
-  (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
-  (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
-  (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
-  (modalka-global-mode 1)
-  )
+;;   :config
+;;   (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
+;;   (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
+;;   (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
+;;   (modalka-global-mode 1)
+;;   )

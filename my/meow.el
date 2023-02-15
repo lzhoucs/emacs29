@@ -7,42 +7,53 @@
    '("k" . meow-prev)
    '("<escape>" . ignore))
 
-  (defvar my-meow-leader-keymap
+  (defvar my-ctl-x-map
     (let ((map (make-sparse-keymap)))
-      (define-key map ":" 'execute-extended-command)
-      (define-key map "ws" 'split-window-right)
+      (set-keymap-parent map ctl-x-map)
+      (define-key map (kbd "SPC") mode-specific-map)
+      (define-key map (kbd ":") #'execute-extended-command)
+      (define-key map (kbd "?") #'meow-cheatsheet)
       map)
-    "my meow leader keymap.")
+    "my ctrl x keymap.")
 
 
 
-  (setq meow-keypad-leader-dispatch my-meow-leader-keymap)
+  ;; (setq meow-keypad-leader-dispatch my-meow-leader-keymap)
 
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
-   '(":" . execute-extended-command)
-   '("ab" . split-window-horizontally)
-   )
+  ;; (meow-leader-define-key
+  ;;  ;; SPC j/k will run the original command in MOTION state.
+  ;;  '("j" . "H-j")
+  ;;  '("k" . "H-k")
+  ;;  ;; Use SPC (0-9) for digit arguments.
+  ;;  '("1" . meow-digit-argument)
+  ;;  '("2" . meow-digit-argument)
+  ;;  '("3" . meow-digit-argument)
+  ;;  '("4" . meow-digit-argument)
+  ;;  '("5" . meow-digit-argument)
+  ;;  '("6" . meow-digit-argument)
+  ;;  '("7" . meow-digit-argument)
+  ;;  '("8" . meow-digit-argument)
+  ;;  '("9" . meow-digit-argument)
+  ;;  '("0" . meow-digit-argument)
+  ;;  '("/" . meow-keypad-describe-key)
+  ;;  '("?" . meow-cheatsheet)
+  ;;  '(":" . execute-extended-command)
+  ;;  '("ab" . split-window-horizontally)
+  ;;  )
 
-  (define-key meow-normal-state-keymap (kbd "SPC") nil)
-  (define-key meow-motion-state-keymap (kbd "SPC") nil)
-  (define-key meow-normal-state-keymap (kbd "C-<backspace>") 'meow-keypad)
-  (define-key meow-motion-state-keymap (kbd "C-<backspace>") 'meow-keypad)
+  ;; (define-key meow-normal-state-keymap (kbd "SPC") nil)
+  ;; (define-key meow-motion-state-keymap (kbd "SPC") nil)
+  (define-key meow-normal-state-keymap (kbd "SPC") my-ctl-x-map)
+  (define-key meow-motion-state-keymap (kbd "SPC") my-ctl-x-map)
+  ;; (define-key meow-normal-state-keymap (kbd "SPC SPC") mode-specific-map)
+  ;; (define-key meow-motion-state-keymap (kbd "SPC SPC") mode-specific-map)
+  ;; (define-key meow-normal-state-keymap (kbd "SPC :") #'execute-extended-command)
+  ;; (define-key meow-motion-state-keymap (kbd "SPC :") #'execute-extended-command)
+  ;; (define-key meow-normal-state-keymap (kbd "SPC ?") #'meow-cheetsheet)
+  ;; (define-key meow-motion-state-keymap (kbd "SPC ?") #'meow-cheetsheet)
+
+  ;; (define-key meow-normal-state-keymap (kbd "C-<backspace>") 'meow-keypad)
+  ;; (define-key meow-motion-state-keymap (kbd "C-<backspace>") 'meow-keypad)
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
