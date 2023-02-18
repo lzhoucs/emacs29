@@ -20,6 +20,7 @@
   (load-theme 'doom-monokai-machine t))
 
 ;; (load-file (locate-user-emacs-file "my/meow.el"))
+(load-file (locate-user-emacs-file "my/elisp.el"))
 
 ;; Enable vertico
 (use-package vertico
@@ -35,6 +36,10 @@
   (setq vertico-multiform-commands
         '(
           (consult-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+          (my-consult-project-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+          (consult-info buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+          (consult-project-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+          (consult-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
           (t reverse)
           ))
   ;; Different scroll margin
@@ -81,22 +86,6 @@
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
-  (defun consult-info-emacs ()
-    "Search through Emacs info pages."
-    (interactive)
-    (consult-info "emacs" "efaq" "elisp" "cl" "compat"))
-
-  (defun consult-info-org ()
-    "Search through the Org info page."
-    (interactive)
-    (consult-info "org"))
-
-  (defun consult-info-completion ()
-    "Search through completion info pages."
-    (interactive)
-    (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
-		  "corfu" "cape" "tempel"))
-
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -256,16 +245,6 @@
          ("b" . consult-project-buffer)
          )
   :config
-  (defun my-consult-project-ripgrep()
-    (interactive)
-    (require 'consult)
-    ;; consult's approach doesn't work here, not sure why
-    ;; (consult--with-project
-    ;;  (consult-ripgrep)))
-
-    ;; magit's approach works
-    (consult-ripgrep (project-root (project-current t))))
-
   (setq project-switch-commands '(
                                   (project-find-file "Find file")
                                   (magit-project-status "Magit")
@@ -382,22 +361,37 @@
   (setq evil-want-fine-undo t)
   (setq evil-undo-system 'undo-fu)
   (setq evil-intercept-esc 't) ;; terminal only
+  (setq evil-inhibit-esc t)
   ;; should try and consider
   ;; evil-cross-lines
   :config
+  ;; root
+  (evil-define-key 'normal 'global (kbd "q") #'evil-quit)
   (evil-set-leader '(normal motion visual replace operator) (kbd "SPC"))
+  ;; leader root
+  (evil-define-key 'normal 'global (kbd "<leader>:") #'execute-extended-command)
+  (evil-define-key 'normal 'global (kbd "<leader>q") #'evil-record-macro)
+  (evil-define-key 'normal 'global (kbd "<leader><tab>") #'evil-switch-to-windows-last-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>/") #'consult-ripgrep)
+  (evil-define-key 'normal 'global (kbd "<leader>b") #'consult-buffer)
+  ;; p project
   (evil-define-key 'normal 'global (kbd "<leader>p") project-prefix-map)
+  (evil-define-key 'normal 'global (kbd "<leader>px") nil)
+  (evil-define-key 'normal 'global (kbd "<leader>p:") #'project-execute-extended-command)
+  ;; w window
   ;; don't need it, use leader-w instead. Note because normal state reuse keys from motion state, we need to find and set it in the "root"
   (evil-define-key 'motion 'global (kbd "C-w") nil)
   (evil-define-key 'normal 'global (kbd "<leader>w") evil-window-map)
+  ;; f file
   (evil-define-key 'normal 'global (kbd "<leader>fs") #'save-buffer)
   (evil-define-key 'normal 'global (kbd "<leader>ff") #'find-file)
-  (evil-define-key 'normal 'global (kbd "<leader>/") #'consult-ripgrep)
-  (evil-define-key 'normal 'global (kbd "<leader>b") #'consult-buffer)
+  ;; i info
   (evil-define-key 'normal 'global (kbd "<leader>ii") #'consult-info)
   (evil-define-key 'normal 'global (kbd "<leader>ie") #'consult-info-emacs)
   (evil-define-key 'normal 'global (kbd "<leader>io") #'consult-info-org)
   (evil-define-key 'normal 'global (kbd "<leader>ic") #'consult-info-completion)
+  ;; c coding
+  (evil-define-key 'normal 'global (kbd "<leader>cl") #'my-toggle-comment)
   (evil-mode)
   :bind (:map evil-window-map
          ;; leaving only non C versions
