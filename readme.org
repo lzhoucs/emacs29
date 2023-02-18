@@ -8,6 +8,11 @@ SPC : => M-x
 SPC => c-x, so SPC p s is c-x p s
 SPC SPC => c-c
 SPC : => M-x
+* C-x or C-c
+C-x if morer global, non prog related
+e.g: magit, consult, project
+C-c if more local, context sensitive, short lived, prog related
+e.g: treesit, eglot, org mode, magit commit
 * Reference
 https://github.com/DogLooksGood/dogEmacs/blob/master/elisp/init-modal.el
 https://github.com/DogLooksGood/meomacs

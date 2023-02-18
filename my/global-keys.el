@@ -38,10 +38,10 @@
 
 ;; window
 (global-set-key (kbd "C-x 1") nil)
-(global-set-key (kbd "C-x w o") #'delete-other-windows)
+;; (global-set-key (kbd "C-x w o") #'delete-other-windows)
 
 (global-set-key (kbd "C-x w 2") nil)
-(global-set-key (kbd "C-x w V") #'split-root-window-below)
+;; (global-set-key (kbd "C-x w V") #'split-root-window-below)
 
 (global-set-key (kbd "C-x w 3") nil)
-(global-set-key (kbd "C-x w v") #'split-root-window-right)
+;; (global-set-key (kbd "C-x w v") #'split-root-window-right)

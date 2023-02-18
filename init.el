@@ -17,33 +17,7 @@
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-zenburn t))
-
-;; (load-theme 'modus-vivendi)
-;;
-;; (use-package emacs
-;;   :config
-;;   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
-
-;;   ;; Add all your customizations prior to loading the themes
-;;   ;; (setq modus-themes-italic-constructs t
-;;   ;;       modus-themes-bold-constructs nil)
-
-;;   ;; Maybe define some palette overrides, such as by using our presets
-;;   ;; (setq modus-themes-common-palette-overrides
-;;   ;;       modus-themes-preset-overrides-intense)
-
-;;   ;; Load the theme of your choice.
-  ;; (load-theme 'modus-operandi)
-  ;; :bind ("<f5>" . modus-themes-toggle))
-
-;; Evil mode
-;; (use-package evil
-;;   :init
-;;   (setq evil-want-keybinding nil)
-;;   :config
-;;   (evil-mode 1))
-
+  (load-theme 'doom-monokai-machine t))
 
 ;; (load-file (locate-user-emacs-file "my/meow.el"))
 
@@ -51,6 +25,7 @@
 (use-package vertico
   :bind (:map vertico-map
          ("C-l" . vertico-insert)
+         ("C-<backspace>" . backspace-kill-word)
          ("C-j" . nil)
          )
   :init
@@ -83,7 +58,7 @@
          ([remap Info-search] . consult-info)
          ;; C-x bindings (ctl-x-map)
          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ;; ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
@@ -302,17 +277,18 @@
     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (use-package project
-  ;; :config
-  ;; (setq project-switch-commands '(
-  ;;                                 (project-find-file "Find file")
-  ;;                                 ))
+  ;; https://github.com/magit/magit/blob/main/lisp/magit-extras.el#L236-L246
+  ;; https://mastodon.social/@ctietze/109748735976228771
+  :bind (:map project-prefix-map
+         ("m" . magit-project-status)
+         )
+  :config
+  (setq project-switch-commands '(
+                                  (project-find-file "Find file")
+                                  (magit-project-status "Magit")
+                                  ))
   )
 (use-package magit
-  ;; :requires project1absdf
-  :init
-  ;; this is to populate project-switch-commands with Magit(m)
-  (require 'magit-extras)
-  ;; (require 'project)
   :config
   (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   )
@@ -375,15 +351,82 @@
   ;; (setq pyim-cloudim 'baidu) ;; 'google
   )
 
-(use-package modalka
+;; (use-package modalka
 
-  ;; :bind (:map modalka-mode-map
-  ;;        ("C-x C-g" . execute-extended-command)
-  ;;        )
+;;   ;; :bind (:map modalka-mode-map
+;;   ;;        ("C-x C-g" . execute-extended-command)
+;;   ;;        )
 
+;;   :config
+;;   (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
+;;   (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
+;;   (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
+
+;;   (setq modalka-excluded-modes '(
+;;                                          magit-status-mode
+;;                                          Info-mode
+;;                                          dired-mode
+;;                                          ))
+
+;;   (modalka-global-mode 1)
+;;   )
+
+
+;; (setq viper-mode t)
+;; (require 'viper)
+
+(use-package dirvish
   :config
-  (define-key modalka-mode-map (kbd "SPC") ctl-x-map)
-  (define-key modalka-mode-map (kbd "SPC SPC") mode-specific-map)
-  (define-key modalka-mode-map (kbd "SPC :") #'execute-extended-command)
-  (modalka-global-mode 1)
+  (dirvish-override-dired-mode)
   )
+
+;; see: http://traeki.freeshell.org/files/viper-sample
+;; (use-package viper
+;;   :init
+;;   (setq viper-expert-level '5)
+;;   (setq viper-inhibit-startup-message 't)
+;;   (setq viper-want-ctl-h-help 't)
+;;   (setq viper-mode t)
+;;   (require 'viper)
+;;   )
+
+(use-package undo-fu)
+(use-package evil
+  :init
+  ;; (setq evil-want-C-w-delete nil) ;; not necessary when we set C-w to nil
+  (setq evil-want-fine-undo t)
+  (setq evil-undo-system 'undo-fu)
+  (setq evil-intercept-esc 't) ;; terminal only
+  ;; should try and consider
+  ;; evil-cross-lines
+  :config
+  (evil-set-leader '(normal motion visual replace operator) (kbd "SPC"))
+  (evil-define-key 'normal 'global (kbd "<leader>p") project-prefix-map)
+  ;; don't need it, use leader-w instead. Note because normal state reuse keys from motion state, we need to find and set it in the "root"
+  (evil-define-key 'motion 'global (kbd "C-w") nil)
+  (evil-define-key 'normal 'global (kbd "<leader>w") evil-window-map)
+  (evil-define-key 'normal 'global (kbd "<leader>fs") #'save-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>ff") #'find-file)
+  (evil-define-key 'normal 'global (kbd "<leader>/") #'consult-ripgrep)
+  (evil-define-key 'normal 'global (kbd "<leader>b") #'consult-buffer)
+  (evil-mode)
+  :bind (:map evil-window-map
+         ;; leaving only non C versions
+         ("C-h" . nil)
+         ("C-j" . nil)
+         ("C-k" . nil)
+         ("C-l" . nil)
+         ("C-q" . nil)
+         )
+  )
+
+(use-package doom-modeline
+  ;; :requires all-the-icons
+  :init
+  (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-minor-modes t)
+  (setq doom-modeline-modal t)
+  (doom-modeline-mode 1)
+  )
+
+(use-package all-the-icons)
