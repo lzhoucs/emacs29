@@ -18,6 +18,8 @@
 (setq inhibit-compacting-font-caches t)
 (setq initial-major-mode 'fundamental-mode)
 
+(setq display-line-numbers-type 'relative) 
+(global-display-line-numbers-mode)
 ;; for built in completion only, no longer needed since went with Vertico
 ;; (setq completion-auto-select 'second-tab)
 
