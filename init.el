@@ -1,10 +1,21 @@
  ;; -*- lexical-binding: t; -*-
 
 (require 'package)
-(setq package-archives '(
-                         ;; ("org"   . "http://orgmode.org/elpa/")
-                         ("gnu"   . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+
+;; https://github.com/minad/consult/issues/451#issuecomment-1250066027
+(setq package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
+			 ("nongnu-devel" . "https://elpa.gnu.org/nongnu-devel/")
+			 ("melpa-devel" . "https://melpa.org/packages/"))
+      package-archive-priorities '(("gnu-devel" . 2)
+				   ("nongnu-devel" . 1)
+				   ("melpa-devel" . 0))
+      package-archive-column-width 14
+      package-version-column-width 26)
+
+;; (setq package-archives '(
+;;                          ;; ("org"   . "http://orgmode.org/elpa/")
+;;                          ("gnu"   . "https://elpa.gnu.org/packages/")
+;;                          ("melpa" . "https://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -17,7 +28,7 @@
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-monokai-machine t))
+  (load-theme 'doom-one t))
 
 ;; (load-file (locate-user-emacs-file "my/meow.el"))
 (load-file (locate-user-emacs-file "my/elisp.el"))
@@ -32,16 +43,24 @@
   :init
   ;; (unbind-key "C-j" vertico-map)
   (vertico-mode)
-  (vertico-multiform-mode)
-  (setq vertico-multiform-commands
-        '(
-          (consult-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
-          (my-consult-project-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
-          (consult-info buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
-          (consult-project-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
-          (consult-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
-          (t reverse)
-          ))
+  (vertico-buffer-mode)
+  ;; (vertico-buffer-display-action . (display-buffer-in-side-window (side . right)))
+  ;; (setq vertico-multiform-commands
+  ;;       '(
+  ;;         (consult-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;;         (consult-grep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;;         ;; (my-consult-project-ripgrep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right) (window-width . 1))))
+  ;;         (my-consult-project-ripgrep buffer)
+  ;;         ;; (consult-info buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;;         ;; (consult-project-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;;         ;; (consult-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;;         ;; (t reverse)
+  ;;         ))
+  ;; (setq vertico-multiform-categories
+  ;; 	'(
+  ;; ;; 	  ;; (consult-buffer buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;; ;; 	  ;; (consult-grep buffer (vertico-buffer-display-action . (display-buffer-in-side-window (side . right))))
+  ;; 	  (t reverse)))
   ;; Different scroll margin
   ;; (setq vertico-scroll-margin 0)
 
@@ -61,12 +80,6 @@
   :bind (
          ([remap Info-search] . consult-info)
 	 )
-
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
-  ;; :hook (completion-list-mode . consult-preview-at-point-mode)
-
-  ;; The :init configuration is always executed (Not lazy)
   :init
 
   ;; Optionally configure the register formatting. This improves the register
@@ -146,7 +159,6 @@
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -160,12 +172,7 @@
   :after vertico
   ;; :bind (:map minibuffer-local-map
   ;;        ("M-A" . marginalia-cycle))
-
-  ;; The :init configuration is always executed (Not lazy!)
   :init
-
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
 (use-package orderless
@@ -208,7 +215,10 @@
   ;;       #'command-completion-default-include-p)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t)
+
+  (electric-pair-mode)
+  )
 
 ;; for treesit-install-language-grammar command
 (setq treesit-language-source-alist
@@ -256,34 +266,25 @@
   :config
   (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   )
-;; (use-package which-key
-;;   :init
-;;   (setq which-key-idle-delay .4)
-;;   :config
-;;   (which-key-mode)
-;;   )
-
-;; (use-package treesit-auto
-;;   :demand t
-;;   :config
-;;   (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
-;;   (setq treesit-auto-install 'prompt)
-;;   (global-treesit-auto-mode))
 
 ;; manually map original non treesit mode to treesit mode(*-ts-mode)
 ;; this only works when original non treesit mode are auto loaded which isn't the case for typescript because the mode (typescript-mode) itself is not installed
 ;; (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode))
 ;; works well
 (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
+(add-to-list 'major-mode-remap-alist '(scss-mode . css-ts-mode))
 ;; does not work
 ;; (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode))
 
 ;; this approach works better since it doesn't require original mode to be installed
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 
 (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
 (add-hook 'js-ts-mode-hook 'eglot-ensure)
+(add-hook 'rust-ts-mode-hook 'eglot-ensure)
+(add-hook 'css-ts-mode-hook 'eglot-ensure)
 
 
 ;; built in package
@@ -295,6 +296,10 @@
          ("C-c d" . xref-find-definitions)
          ("C-c t" . eglot-find-typeDefinition)
         )
+  :config
+  (add-to-list 'eglot-server-programs
+	       ;; default has rls which is deprecated, so this line fixes the prompt of "more than one server executable available"
+	       '(rust-ts-mode . ("rust-analyzer")))
   )
 
 
@@ -373,7 +378,9 @@
   (evil-define-key 'normal 'global (kbd "<leader>q") #'evil-record-macro)
   (evil-define-key 'normal 'global (kbd "<leader><tab>") #'evil-switch-to-windows-last-buffer)
   (evil-define-key 'normal 'global (kbd "<leader>/") #'consult-ripgrep)
-  (evil-define-key 'normal 'global (kbd "<leader>b") #'consult-buffer)
+  ;; b buffer
+  (evil-define-key 'normal 'global (kbd "<leader>bb") #'consult-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>bd") #'kill-current-buffer)
   ;; p project
   (evil-define-key 'normal 'global (kbd "<leader>p") project-prefix-map)
   (evil-define-key 'normal 'global (kbd "<leader>px") nil)
@@ -392,6 +399,7 @@
   (evil-define-key 'normal 'global (kbd "<leader>ic") #'consult-info-completion)
   ;; c coding
   (evil-define-key 'normal 'global (kbd "<leader>cl") #'my-toggle-comment)
+  (evil-define-key 'normal 'global (kbd "<leader>ce") #'consult-flymake)
   (evil-mode)
   :bind (:map evil-window-map
          ;; leaving only non C versions
@@ -400,8 +408,13 @@
          ("C-k" . nil)
          ("C-l" . nil)
          ("C-q" . nil)
+         ("C-o" . nil)
          )
   )
+
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package doom-modeline
   ;; :requires all-the-icons
@@ -413,3 +426,15 @@
   )
 
 (use-package all-the-icons)
+
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
+(use-package ediff
+  :config
+  (setq ediff-split-window-function #'split-window-horizontally))
+
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "marked"))

@@ -17,9 +17,15 @@
 (setq initial-scratch-message nil)
 (setq inhibit-compacting-font-caches t)
 (setq initial-major-mode 'fundamental-mode)
+(setq make-backup-files nil)
 
-(setq display-line-numbers-type 'relative) 
+;; (setq display-line-numbers-type 'relative) 
 (global-display-line-numbers-mode)
+
+(add-to-list 'default-frame-alist
+	     ;; '(font . "JetBrains Mono"))
+	     '(font . "Source Code Pro 11"))
+
 ;; for built in completion only, no longer needed since went with Vertico
 ;; (setq completion-auto-select 'second-tab)
 
